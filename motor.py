@@ -5,10 +5,10 @@ import time
 import RPi.GPIO as GPIO
 import numpy as np
 
-class stepper_motor()
+class stepper_motor():
     def __init__(gpiopins, #Enter the pins to be used. The first is the sleep, the rest are Ain1, Ain2, Bin2, Bin1 
                 **kwargs):
-        if len(gpiopins) != 5
+        if len(gpiopins) != 5:
             raise ValueError('Must Supply 5 gpiopins! The first is the sleep!')
         GPIO.setmode(GPIO.BCM) #We will default to BCM in all of the programs, Do not set mode to GPIO.Board anywhere else in the program!
         self.gpiopins = gpiopins
@@ -22,7 +22,7 @@ class stepper_motor()
     
     def turn(turns, #Number of units to turn, if units = 'rev' then this is the number of cycles it makes, if units = 'rad' or 'deg' this is the angle through which it sweeps
             units = 'rev',
-            steptype = 'full'
+            steptype = 'full',
             rpm = 30):
                 
         if (steptype != 'full') or (steptype != 'half'):
@@ -75,4 +75,9 @@ class stepper_motor()
             print("steptype must be either 'full' or 'half'") #Told you so!
 
         __coils__([0,0,0,0])
-        GPIO.cleanup()
+        
+class servo():
+    def __init__(gpiopins):
+        if isinstance(gpiopins, int) is False:
+            raise ValueError('servo "gpiopins" is only one number, must be int')
+        
