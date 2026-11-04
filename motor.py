@@ -43,9 +43,18 @@ class stepper_motor():
 
         spr = 200 #Specified by Hardware of NEMA 17 stepper motor
         rpm = 30
-        fb = 1 #fb = forward-backward. If you look at the for loops below, in each iteration we add fb, not 1. If fb is -1, we would be adding -1 and so subtracting
-        #Subtracting from i means going backward through the states and so fb = 1 is forward, fb = -1 is backwards
-
+        if turns > 0:
+            fb = 1 #fb = forward-backward. If you look at the for loops below, in each iteration we add fb, not 1. If fb is -1, we would be adding -1 and so subtracting
+            #Subtracting from i means going backward through the states and so fb = 1 is forward, fb = -1 is backwards
+        if turns < 0:
+            fb = -1
+        else:
+            raise ValueError("Turns Cannont be Zero")
+        
+        if units == 'rad':
+            turns = turns / (2*np.pi)
+        if units == 'deg':
+            turns = turns / (360)
         delay = 60 / (spr*rpm) #We get this 
         steps = turns * spr
 
@@ -81,3 +90,17 @@ class servo():
         if isinstance(gpiopins, int) is False:
             raise ValueError('servo "gpiopins" is only one number, must be int')
         
+        self.gpiopins = gpiopins
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.gpiopins,GPIO.OUT)
+        self.pw = GPIO.PWM(self.gpiopins, 50)
+        
+    def start():
+        self.pw.start(7.5)
+        
+    def set_angle(angle):
+        dutycycle = 7.5 + angle*2/30
+        self.pw.change(dutycycle)
+      
+    def stop():
+        self.pw.stop()
